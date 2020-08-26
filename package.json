@@ -14,7 +14,9 @@
   "repository": "https://github.com/jesstelford/underdb",
   "author": "Jess Telford <hi+npm@jes.st>",
   "license": "MIT",
-  "files": ["/{,adapters/}*.{js{,.map},d.ts}"],
+  "files": [
+    "/{,adapters/}*.{js{,.map},d.ts}"
+  ],
   "devDependencies": {
     "@changesets/cli": "^2.10.1",
     "@types/jest": "^26.0.10",
