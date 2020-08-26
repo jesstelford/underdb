@@ -1,14 +1,14 @@
-import { IAdapter } from '../Low'
+import { IAdapter, Maybe } from '../';
 
-export default class Memory implements IAdapter {
-  private data = null
+export default class Memory<T> implements IAdapter<T> {
+  private data: Maybe<T> = null;
 
-  public read() {
-    return Promise.resolve(this.data)
+  public read(): Promise<Maybe<T>> {
+    return Promise.resolve(this.data);
   }
 
-  public write(data: any) {
-    this.data = data
-    return Promise.resolve()
+  public write(data: Maybe<T>): Promise<void> {
+    this.data = data;
+    return Promise.resolve();
   }
 }

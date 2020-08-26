@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es6",
-      "dom"
-    ],
+    "lib": ["es6", "dom"],
     "target": "es6",
     "module": "commonjs",
     "sourceMap": true,
-    "outDir": "./lib",
+    "outDir": "./",
     "rootDir": "./src",
     "strict": true,
     "noUnusedLocals": true,
@@ -16,9 +13,5 @@
     "removeComments": true,
     "esModuleInterop": true
   },
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/__tests__/*"
-  ]
+  "exclude": ["node_modules", "**/*.test.ts", "**/__tests__/*"]
 }

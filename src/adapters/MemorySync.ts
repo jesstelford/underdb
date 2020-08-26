@@ -1,13 +1,13 @@
-import { ISyncAdapter } from '../LowSync'
+import { ISyncAdapter, Maybe } from '../';
 
-export default class Memory implements ISyncAdapter {
-  private data = null
+export default class Memory<T> implements ISyncAdapter<T> {
+  private data: Maybe<T> = null;
 
-  public read() {
-    return this.data
+  public read(): Maybe<T> {
+    return this.data;
   }
 
-  public write(data: any) {
-    this.data = data
+  public write(data: Maybe<T>): void {
+    this.data = data;
   }
 }

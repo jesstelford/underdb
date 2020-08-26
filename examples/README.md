@@ -3,20 +3,20 @@
 ## CLI
 
 ```js
-const LowSync = require('lowdb/lib/LowSync')
-const FileSync = require('lowdb/lib/adapters/FileSync')
+const UnderDB = require("underdb");
+const FileSync = require("underdb/adapters/FileSync");
 
-const adapter = new FileSync('db.json')
-const db = new LowSync(adapter)
+const adapter = new FileSync("db.json");
+const db = new UnderDB.sync(adapter);
 
-db.read()
+db.read();
 
 if (db.data === null) {
-  db.data = { posts: [] }
+  db.data = { posts: [] };
 }
 
-db.data.posts.push({ title: process.argv[2] })
-db.write()
+db.data.posts.push({ title: process.argv[2] });
+db.write();
 ```
 
 ```sh
@@ -28,79 +28,77 @@ $ cat db.json
 ## Browser
 
 ```js
-import LowSync from 'lowdb/lib/LowSync'
-import LocalStorage from 'lowdb/lib/adapters/LocalStorage'
+import UnderDB from "underdb";
+import LocalStorage from "underdb/adapters/LocalStorage";
 
-const adapter = new LocalStorage('db')
-const db = new LowSync(adapter)
+const adapter = new LocalStorage("db");
+const db = new UnderDB.sync(adapter);
 
-db.read()
+db.read();
 
 if (db.data === null) {
-  db.data = { posts: [] }
+  db.data = { posts: [] };
 }
 
-db.data.posts.push({ title: 'lowdb' })
-db.write()
+db.data.posts.push({ title: "underdb" });
+db.write();
 ```
 
 ## Server
 
-Please __note__ that if you're developing a local server and don't expect to get concurrent requests, it's often easier to use `JSONFileSync` adapter.
+Please **note** that if you're developing a local server and don't expect to get concurrent requests, it's often easier to use `JSONFileSync` adapter.
 
 But if you need to avoid blocking requests, you can do so by using `JSONFile` adapter.
 
 ```js
-const Koa = require('koa')
-const _ = require('koa-route')
-const bodyParser = require('koa-bodyparser')
+const Koa = require("koa");
+const _ = require("koa-route");
+const bodyParser = require("koa-bodyparser");
 
-const Low = require('lowdb/lib/Low')
-const JSONFile = require('lowdb/lib/adapters/JSONFile')
+const UnderDB = require("underdb");
+const JSONFile = require("underdb/adapters/JSONFile");
 
-const app = new Koa()
-const adapter = new JSONFile('db.json')
-const db = new Low(adapter)
-
-(async () => {
-  await db.read()
+const app = new Koa();
+const adapter = new JSONFile("db.json");
+const db = new UnderDB(adapter)(async () => {
+  await db.read();
 
   if (db.data === null) {
-    db.data = { posts: [] }
+    db.data = { posts: [] };
   }
 
-  app.use(bodyParser())
+  app.use(bodyParser());
 
   app.use(
-    _.get('/posts', async ctx => {
-      ctx.body = db.data.posts
+    _.get("/posts", async ctx => {
+      ctx.body = db.data.posts;
     })
-  )
+  );
 
   app.use(
-    _.get('/posts/:id', async (ctx, id) => {
-      const post = db.data.posts.find(post => post.id === id)
+    _.get("/posts/:id", async (ctx, id) => {
+      const post = db.data.posts.find(post => post.id === id);
       if (!post) {
-        return ctx.throw(`Cannot find post with ID ${id}`, 404)
+        return ctx.throw(`Cannot find post with ID ${id}`, 404);
       }
-      ctx.body = post
+      ctx.body = post;
     })
-  )
+  );
 
   app.use(
-    _.post('/posts', async ctx => {
+    _.post("/posts", async ctx => {
       const post = {
         id: Date.now().toString(),
         ...ctx.request.body
-      }
-      db.data.posts.push(post)
-      await db.write()
-      ctx.body = post
+      };
+      db.data.posts.push(post);
+      await db.write();
+      ctx.body = post;
     })
-  )
+  );
 
-  app.listen(8080)
-})()
+  app.listen(8080);
+})();
 ```
 
 ## In-memory
@@ -108,14 +106,13 @@ const db = new Low(adapter)
 With this adapter, calling `write` will do nothing. One use case for this adapter can be for tests.
 
 ```js
-const fs = require('fs')
-const low = require('lowdb/lib/LowSync')
-const FileSync = require('lowdb/lib/adapters/FileSync')
-const MemorySync = require('lowdb/lib/adapters/MemorySync')
+const fs = require("fs");
+const UnderDB = require("underdb");
+const FileSync = require("underdb/adapters/FileSync");
+const MemorySync = require("underdb/adapters/MemorySync");
 
-const adapter = process.env.NODE_ENV === 'test'
-  ? new MemorySync()
-  : new FileSync('db.json')
+const adapter =
+  process.env.NODE_ENV === "test" ? new MemorySync() : new FileSync("db.json");
 
-const db = new LowSync(adapter)
+const db = new UnderDB.sync(adapter);
 ```

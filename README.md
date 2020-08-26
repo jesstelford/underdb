@@ -1,79 +1,64 @@
-# lowdb [![Build Status](https://travis-ci.org/typicode/lowdb.svg?branch=next)](https://travis-ci.org/typicode/lowdb)
+# UnderDB
 
->  Minimalist JSON database for small projects
+> Minimalist JSON database for small projects
 
 ```js
-db.data
-  .posts
-  .push({ id: 1, title: 'lowdb is awesome'})
+db.data.posts.push({ id: 1, title: 'underdb is awesome' });
 
-db.write()
+db.write();
 ```
 
 ```json
 {
-  "posts": [
-    { "id": 1, "title": "lowdb is awesome" }
-  ]
+  "posts": [{ "id": 1, "title": "underdb is awesome" }]
 }
 ```
 
 ## Highlights
 
-* Extremely minimalist API
-* Query and modify data using plain JS
-* TypeScript support out of the box
-* Hackable
-  * Change storage, file format or add encryption via [adapters](#adapters)
-  * Add lodash, ramda, ... for super powers!
+- Extremely minimalist API
+- Query and modify data using plain JS
+- TypeScript support out of the box
+- Hackable
+  - Change storage, file format or add encryption via [adapters](#adapters)
+  - Add lodash, ramda, ... for super powers!
 
 ## Install
 
 ```sh
-npm install lowdb
+npm install underdb
 ```
-
-<a href="https://www.patreon.com/typicode">
-  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
-
 
 ## Usage
 
 ```js
-import path from 'path'
-import Low from 'lowdb/lib/Low'
-import JSONFile from 'lowdb/adapters/JSONFile'
+import path from 'path';
+import UnderDB from 'underdb';
+import JSONFile from 'underdb/adapters/JSONFile';
 
 // Ensure that the path to db.json is not relative to proces.cwd()
-const file = path.join(__dirname, 'db.json')
+const file = path.join(__dirname, 'db.json');
 
-const adapter = new JSONFile(file)
-const db = new Low(adapter)
+const adapter = new JSONFile(file);
+const db = new UnderDB(adapter);
 
-const defaultData = { messages: [] }
-
-(async () => {
-
-  // Read data from JSON file, this will set db.data 
-  await db.read()
+const defaultData = { messages: [] }(async () => {
+  // Read data from JSON file, this will set db.data
+  await db.read();
 
   // If db.json doesn't exist, db.data is null
   if (db.data === null) {
-  
     // If db.data is null, set some default data
     // db.data can be anything: object, array, string, ...
-    db.data = { messages: [] }
-    
+    db.data = { messages: [] };
   }
 
   // Push new message
-  db.data.messages.push('hello world')
+  db.data.messages.push('hello world');
 
   // Write to db.data to db.json
-  await db.write()
-  
-})()
+  await db.write();
+})();
 ```
 
 ```js
@@ -87,28 +72,28 @@ const defaultData = { messages: [] }
 
 ### Classes
 
-Lowdb comes with 2 classes to be used with asynchronous or synchronous adapters.
+UnderDB comes with 2 classes to be used with asynchronous or synchronous adapters.
 
-#### new Low(adapter)
+#### `new UnderDB(adapter)`
 
 ```js
-import Low from 'lowdb/lib/Low'
-import JSONFile from 'lowdb/lib/adapters/JSONFile'
+import UnderDB from 'underdb';
+import JSONFile from 'underdb/lib/adapters/JSONFile';
 
-const db = new Low(new JSONFile('db.json'))
-await db.read()
-await db.write()
+const db = new UnderDB(new JSONFile('db.json'));
+await db.read();
+await db.write();
 ```
 
-#### new LowSync(adapterSync)
+#### `new UnderDB.sync(adapterSync)`
 
 ```js
-import LowSync from 'lowdb/lib/LowSync'
-import JSONFileSync from 'lowdb/lib/adapters/JSONFileSync'
+import UnderDB from 'underdb';
+import JSONFileSync from 'underdb/lib/adapters/JSONFileSync';
 
-const db = new LowSync(new JSONFileSync('db.json'))
-db.read()
-db.write()
+const db = new UnderDB.sync(new JSONFileSync('db.json'));
+db.read();
+db.write();
 ```
 
 ### Methods
@@ -117,12 +102,12 @@ db.write()
 
 Calls `adaper.read()` and sets instance `data`.
 
-__Note__ `JSONFile` and `JSONFileSync` adapters will set `data` to `null` if file doesn't exist.
+**Note** `JSONFile` and `JSONFileSync` adapters will set `data` to `null` if file doesn't exist.
 
 ```js
-db.data // === undefined
-db.read()
-db.data // !== undefined
+db.data; // === undefined
+db.read();
+db.data; // !== undefined
 ```
 
 #### `write()`
@@ -130,36 +115,36 @@ db.data // !== undefined
 Calls `adapter.write(data)` and passes instance `data`
 
 ```js
-db.data = { posts: [] }
-db.write() // db.json will be { posts: [] }
-db.data = {}
-db.write() // db.json will be {}
+db.data = { posts: [] };
+db.write(); // db.json will be { posts: [] }
+db.data = {};
+db.write(); // db.json will be {}
 ```
 
 ### Properties
 
 #### `data`
 
-`data` is your db state. If you're using the adapters coming with lowdb, it can be any type supported by [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
+`data` is your db state. If you're using the adapters coming with UnderDB, it can be any type supported by [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
 
 ```js
-db.data = 'string'
-db.data = [ 1, 2, 3 ]
-db.data = { key: 'value' }
+db.data = 'string';
+db.data = [1, 2, 3];
+db.data = { key: 'value' };
 ```
 
 ## Adapters
 
 ### Bundled adapters
 
-Lowdb comes with 3 adapters, but you can write your own.
+UnderDB comes with 3 adapters, but you can write your own.
 
 #### lib/adapters/JSONFile
 
 Asynchronous adapter for reading and writng JSON files.
 
 ```js
-new Low(new JSONFile(file))
+new UnderDB(new JSONFile(file));
 ```
 
 #### lib/adapters/JSONFile
@@ -167,32 +152,32 @@ new Low(new JSONFile(file))
 Synchronous adapter for reading and writng JSON files.
 
 ```js
-new LowSync(new JSONFileSync(file))
+new UnderDB.sync(new JSONFileSync(file));
 ```
 
 #### lib/adapters/LocalStorage
 
-Synchronous adapter for `window.localStorage` use it with `LowSync`.
+Synchronous adapter for `window.localStorage` use it with `UnderDB.sync`.
 
 ```
-new LowSync(new LocalStorage())
+new UnderDB.sync(new LocalStorage())
 ```
 
 ## Third-party adapters
 
-* ...
-* ...
+- ...
+- ...
 
 ## Recipes
 
-### Using lowdb with lodash
+### Using UnderDB with lodash
 
 In this example, we're going to use lodash but you can apply the same principles to other libraries like ramda.
 
 ```js
 import lodash from lodash
 
-// After db.read, add a new chain property 
+// After db.read, add a new chain property
 db.chain = lodash.chain(db.data)
 
 // And use chain instead of db.data if you want to use the powerful API that lodash provides
@@ -205,27 +190,27 @@ db.chain
 If you're building for the web, and want to make the bundle smaller, you can just use the functions that you need
 
 ```js
-import find from 'lodash/find'
+import find from 'lodash/find';
 
-const message = find(db.data.message, { id: 1 })
+const message = find(db.data.message, { id: 1 });
 ```
 
 ### Synchronous file operations
 
-If you prefer to write data synchronously, use `LowSync` and `JSONFileSync`
+If you prefer to write data synchronously, use `UnderDB` and `JSONFileSync`
 
 ```js
-import LowSync from 'lowdb/LowSync'
-import JSONFileSync from 'lowdb/JSONFileSync'
+import UnderDB from 'underdb';
+import JSONFileSync from 'underdb/JSONFileSync';
 
-const db = new Low(JSONFile('db.json'))
+const db = new UnderDB.sync(JSONFile('db.json'));
 
 // db.read and db.write will be synchronous
 ```
 
 ### Creating your own adapter
 
-Adapter let's you persist your data to any storage. By default, lowdb comes with `JSONFile`, `JSONFileSync` and `LocalStorage` but you can find on npm third-party adapters to store your data to GitHub, Dat, ...
+Adapter let's you persist your data to any storage. By default, UnderDB comes with `JSONFile`, `JSONFileSync` and `LocalStorage` but you can find on npm third-party adapters to store your data to GitHub, Dat, ...
 
 But creating your own is super simple, your adapter just has to provide the following methods:
 
@@ -242,7 +227,8 @@ write: (data: any) => void
 For example, let's say you have some remote storage:
 
 ```js
-import api from './MyAsyncStorage'
+import UnderDB from 'underdb';
+import api from './MyAsyncStorage';
 
 class MyAsyncAdapter {
   // this is optional but your Adapter could take some arguments
@@ -251,33 +237,33 @@ class MyAsyncAdapter {
   }
 
   read() {
-    return api.read() // should return a Promise
+    return api.read(); // should return a Promise
   }
-  
+
   write() {
-    return api.write() // should return a Promise
+    return api.write(); // should return a Promise
   }
 }
 
-const adapter = new MyAsyncAdapter()
-const db = new Low(adapter)
+const adapter = new MyAsyncAdapter();
+const db = new UnderDB(adapter);
 ```
 
 ### Using it with TypeScript
 
-Lowdb now comes with definitions files out of the box, but since there's no way of telling what the data will look like you will need to provide an interface via a generic. 
+UnderDB comes with definitions files out of the box, but since there's no way of telling what the data will look like you will need to provide an interface via a generic.
 
 ```ts
 interface IData {
-  messages: string[]
+  messages: string[];
 }
 
-const db = new Low<IData>(adapter)
+const db = new UnderDB<IData>(adapter);
 ```
 
 ## Limits
 
-Lowdb isn't meant to scale and doesn't support Cluster.
+UnderDB isn't meant to scale and doesn't support Cluster.
 
 If you have large JavaScript objects (`~10-100MB`) you may hit some performance issues. This is because whenever you call `write`, the whole object will be serialized and written to the storage.
 
@@ -287,6 +273,4 @@ But if you plan to scale, it's highly recommended to use databases like `Postgre
 
 ## License
 
-MIT 
-
-[Become a Patron](https://www.patreon.com/typicode) - [Supporters](https://thanks.typicode.com)
+MIT
